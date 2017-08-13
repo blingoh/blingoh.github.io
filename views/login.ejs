@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="/javascripts/webix.js"></script>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/webix.css">
+  <style>
+    #areaA {
+      margin: 200px;
+    }
+  </style>
+  <title>Fri_pro</title>
+</head>
+
+<body>
+  <div id="areaA"></div>
+  <script type="text/javascript" charset="utf-8">
+    webix.ready(function () {
+      function newlogin() {
+        // webix.message(JSON.stringify($$("login_form").getValues(), null, 2));
+        // webix.message($$("login_form").getValues());
+        webix.ajax().post('/login', $$("login_form").getValues(), function (text, data, xhr) {
+          if (text == '管理员登录成功') {
+            webix.message({ text: '管理员登录成功' });
+            location.href = '/viewall';
+          } else {
+            if (text == '用户登录成功') {
+              webix.message({ text: '用户登录成功' });
+              location.href = '/';
+            } else {
+              webix.message({ type: "error", text: text });
+              return;
+            }
+
+          }
+        })
+      }
+
+      webix.ui({
+        container: "areaA",
+        id: "login_form",
+        view: "form",
+        elements: [
+          { view: "text", label: "账号", name: "userName" },
+          { view: "text", type: 'password', label: "密码", name: "password" },
+          {
+            margin: 5, cols: [
+              { view: "button", value: "登陆", type: "form", click: newlogin },
+              { view: "button", value: "注册", click: function () { location.href = '/register' } }
+            ]
+          }
+        ]
+      });
+    })
+  </script>
+</body>
+
+</html>

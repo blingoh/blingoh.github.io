@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <% for(var i=0;i<result.length;i++){ %>
+        <%=result[i].title %>
+        <%=result[i].tel %>
+        <%=result[i].status %>  
+        <a href=<%='/reply/'+result[i]._id %>>回复</a><br>
+        <%}%>
+
+
+        
+
+
+
+    </body>
+</html>

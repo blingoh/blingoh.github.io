@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="/javascripts/webix.js"></script>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/webix.css">
+  <style>
+    #areaA {
+      margin: 200px;
+    }
+  </style>
+  <title>Fri_pro</title>
+</head>
+
+<body>
+    <div id="areaA"></div>
+    <script>
+        webix.ready(function(){
+            function newregister(){
+                webix.ajax().post('/register',$$("register_form").getValues(),function(text,data,xhr){
+                    if(text != "注册成功"){
+                        return webix.message({type:"error",text:text});
+                    }
+                    webix.message(text);
+                    location.href = '/';
+                    return 
+                   
+                })
+            };
+
+            webix.ui({
+                container:"areaA",
+                view:"form",
+                id:"register_form",
+                elements:[
+                    {view:"text",label:"账号",name:"userName"},
+                    {view:"text",label:"密码",name:"password",type:'password'},
+                    {
+                        margin:5,cols:[
+                            {view:"button",value:"注册",type:"form",click:newregister},
+                            {view:"button",value:"返回",click:function(){location.href='/login'}}
+                        ]
+                    }
+                ]
+            })
+        })
+    </script>
+</body>

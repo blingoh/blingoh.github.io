@@ -1,0 +1,75 @@
+<%-include('header')%>
+
+    <script type="text/javascript">
+
+
+        var menu_data = [
+            { id: "eAudit", value: "eAudit" },
+            { id: "PQM", value: "PQM" },
+            { id: "PDM", value: "PDM" },
+            { id: "WMS", value: "WMS" },
+            { id: "SCC", value: "SCC" }
+        ];
+
+        var grid = {
+            id: "grid",
+            url: '/all',
+            //save:"rest->/data",
+            view: "datatable",
+            select: "row",
+            columns: [
+                { id: "productType", header: "类型", width: 100 },
+                { id: "title", header: "标题", width: 200 },
+                { id: "tel", header: "联系电话", width: 100 },
+                { id: "status", header: "状态", width: 100 },
+                { id: "answer", header: "", width: 100, template: "<input type='button' value='回复'>" },
+            ],
+            autowidth: true,//自动宽度
+            autoheight: true,//自动高度
+            on: {
+                "onItemClick": function (id, e, trg) {
+                    var item = $$("grid").getSelectedItem();
+                    if (id.column == 'answer') {
+                        // webix.message('del');
+                        location.href = '/reply/' + item._id;
+                        return;
+                    }
+                }
+            }
+        };
+
+        webix.ready(function () {
+            webix.ui({
+
+                cols: [
+                    {
+                        view: "sidebar",
+                        data: menu_data,
+                        height:300,
+                        on: {
+                            onAfterSelect: function (id) {
+                                var info = {}
+                                info["productType"] = this.getItem(id).value;
+                                webix.ajax().post('/type',info,function(text,data,xhr){
+                                    webix.message(text);
+                                    $$("grid").clearAll();
+                                    $$('grid').parse(text);
+                                    // JSON.parse(text).forEach(function(value){
+                                    //     $$('grid').add(value);
+                                    // })
+                                })
+                                //location.href = '/' + this.getItem(id).value;
+                            }
+                        }
+                    },
+                    grid
+                ]
+
+            });
+
+            
+        });
+    </script>
+
+
+    <%-include('footer')%>

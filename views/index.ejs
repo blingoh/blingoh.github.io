@@ -1,0 +1,180 @@
+<%- include('header')%>
+  <script>
+    webix.ready(function () {
+      function del() {
+        var item = $$("grid").getSelectedItem();
+        // var info = {};
+        // info['id'] = item._id;
+        webix.message(item._id);
+        location.href = '/delete/' + item._id;
+      };
+
+
+      function finish() {
+        var item = $$("grid").getSelectedItem();
+        location.href = '/finish/' + item._id;
+      };
+
+      function newpost() {
+        // webix.message(JSON.stringify($$("win").getValues(),null,2));
+        webix.ajax().post('/posts', $$("win2").getValues(), function (text, data, xhr) {
+          if (text == 'success') {
+            webix.message(text);
+            location.href='/';
+          }
+          else {
+            webix.message({ type: "error", text: '出错' });
+          }
+
+        })
+      };
+
+      function init(text) {
+        webix.ui({
+          view:"window",
+          id:"window",
+          width:550,
+          height:550,
+          top:100,
+          left:400,
+          move:true,
+          resize:true,
+          head:{
+            cols:[
+              {view:"label",label:"——— 在线反馈 ———",align:'center'},
+              {view:"button",label:"X",width:50,align:'right',click:"$$('window').close();"}
+            ]
+          },
+        body:{
+          rows:[
+          {view:"label",label:"标题     ："+text[0].title},
+          {view:"label",label:"产品类型:"+text[0].productType},
+          {view:"label",label:"反馈内容:"+text[0].feedContext},
+          {view:"label",label:"联系电话:"+text[0].tel},
+          {view:"label",label:"回复     :"+text[0].answer}
+        ]}
+        }).show();
+
+      };
+
+      var win = {
+        view: "window",
+        id: "win1",
+        width: 550,
+        heigh: 550,
+        top: 100,
+        left: 400,
+        move: true,
+        resize: true,
+        head: {
+          cols: [
+            { view: "label", label: "——— 在线反馈 ———", align: 'center' },
+            { view: "button", label: 'X', width: 50, align: 'right', click: "$$('win1').close();" }
+          ]
+        },
+        // head: "——— 在线反馈 ———",
+        body: {
+          view: "form",
+          id: "win2",
+          rows: [
+            { name: "title", id: "title", view: "text", label: "标题" },
+            //radio,//产品类型
+            {
+              name: "productType", id: "productType", view: "radio", label: "产品类型",
+              options: [
+                { "id": "eAudit", "value": "eAudit" }, // the initially selected item
+                { "id": "PQM", "value": "PQM" },
+                { "id": "PDM", "value": "PDM" },
+                { "id": "WMS", "value": "WMS" },
+                { "id": "SCC", "value": "SCC" },
+              ]
+            },
+            { name: "feedContext", view: "text", label: "反馈内容" },
+            { name: "tel", view: "text", label: "联系电话" },
+            {
+              cols: [
+                { view: "button", value: "提交", type: "form", click: newpost },
+                // {
+                //   view: "button", value: "取消", click: function () {
+                //     location.href = '/';
+                //   }
+                // }
+              ]
+            }
+          ]
+        }
+      };
+
+      var grid = {
+        id: "grid",
+        url: "/ask",
+        //save:"rest->/data",
+        view: "datatable",
+        select: "row",
+        columns: [
+          { id: "productType", header: "产品类型", width: 100 },
+          { id: "title", header: "标题", width: 200 },
+          { id: "tel", header: "联系电话", width: 100 },
+          { id: "status", header: "状态", width: 100 },
+          { id: "del", header: "", width: 100, template: "<input type='button' value='删除'>" },
+          { id: "finish", header: "", width: 100, template: "<input type='button' value='完结'>" }
+        ],
+        autowidth: true,//自动宽度
+        autoheight: true,//自动高度
+        on: {
+          "onItemClick": function (id, e, trg) {
+            var item = $$("grid").getSelectedItem();
+            if (id.column == 'del') {
+              // webix.message('del');
+              location.href = '/delete/' + item._id;
+              return;
+            }
+            else {
+              if (id.column == 'finish') {
+                // webix.message('finish');
+                location.href = '/finish/' + item._id;
+                return;
+              } else {
+                webix.ajax().post('/view/' + item._id, function (text, data, xhr) {
+                  // webix.message(text);
+                  // $$("win1").show(node);
+                  //        init(text);
+                  text = JSON.parse(text);
+                  init(text);
+                  // $$('win1').show();//win1还没有初始化因此不能用show（）
+                })
+                // location.href = '/view/' + item._id;
+              }
+            }
+
+
+          }
+        }
+      };
+
+
+
+      webix.ui({
+        view: "form",
+        id: "form1",
+        rows: [
+          {
+            cols: [
+              { view: "button", label: "提问", width: 100, click: function () { webix.ui(win).show(); } },
+              // { view: "button", label: "删除", width: 100, click: del },
+              // { view: "button", label: "完结", width: 100, click: finish },
+            ]
+          },
+          grid
+        ]
+
+
+      });
+
+      // $$('mytable').parse(data);
+    })
+
+    var test = "test";
+  </script>
+
+  <%- include('footer')%>

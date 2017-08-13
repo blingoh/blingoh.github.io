@@ -1,0 +1,69 @@
+<%- include('header') %>
+
+        <script>
+            webix.ready(function () {
+
+                function newpost() {
+                    // webix.message(JSON.stringify($$("win").getValues(),null,2));
+                    webix.ajax().post('/posts', $$("win2").getValues(), function (text, data, xhr) {
+                        if (text == 'success') {
+                            webix.message(text);
+                            location.href = '/'
+                        }
+                        else {
+                            webix.message({ type: "error", text: '出错' });
+                        }
+
+                    })
+                };
+
+                webix.ui({
+                    view: "window",
+                    id: "win1",
+                    width: 550,
+                    heigh: 550,
+                    top: 100,
+                    left: 400,
+                    move: true,
+                    resize: true,
+                    head: {
+                        cols: [
+                            { view: "label", label: "——— 在线反馈 ———", align: 'center' },
+                            // { view: "button", label: 'X', width: 50, align: 'right', click: "$$('win1').close();" }
+                        ]
+                    },
+                    // head: "——— 在线反馈 ———",
+                    body: {
+                        view: "form",
+                        id: "win2",
+                        rows: [
+                            { name: "title", id: "title", view: "text", label: "标题" },
+                            //radio,//产品类型
+                            {
+                                name: "productType", id: "productType", view: "radio", label: "产品类型",
+                                options: [
+                                    { "id": "eAudit", "value": "eAudit" }, // the initially selected item
+                                    { "id": "PQM", "value": "PQM" },
+                                    { "id": "PDM", "value": "PDM" },
+                                    { "id": "WMS", "value": "WMS" },
+                                    { "id": "SCC", "value": "SCC" },
+                                ]
+                            },
+                            { name: "feedContext", view: "text", label: "反馈内容" },
+                            { name: "tel", view: "text", label: "联系电话" },
+                            {
+                                cols: [
+                                    { view: "button", value: "提交", type: "form", click: newpost },
+                                    {
+                                        view: "button", value: "取消", click: function () {
+                                            location.href = '/';
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }).show();
+            })
+</script>
+<%- include('footer') %>

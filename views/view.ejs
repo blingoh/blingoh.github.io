@@ -1,0 +1,60 @@
+<%- include('header') %>
+
+        <script>
+            var json = '<%- JSON.stringify(result) %>';
+            data = JSON.parse(json);
+            
+            webix.ready(function () {
+                
+                webix.ui({
+                    view: "window",
+                    id: "win1",
+                    width: 550,
+                    heigh: 550,
+                    top: 80,
+                    left: 400,
+                    move: true,
+                    resize: true,
+                    head: {
+                        cols: [
+                            { view: "label", label: "——— 在线反馈 ———", align: 'center' },
+                            { view: "button", label: 'X', width: 50, align: 'right', click: "$$('win1').close();" }
+                        ]
+                    },
+                    // head: "——— 在线反馈 ———",
+                    body: {
+                        view: "form",
+                        id: "win2",
+                        rows: [
+                            { name: "title", id: "title", view: "text", label: "标题" ,value:data[0].title},
+                            //radio,//产品类型
+                            {
+                                name: "productType", id: "productType", view: "radio", label: "产品类型",value:data[0].productType,
+                                options: [
+                                    { "id": "eAudit", "value": "eAudit" }, // the initially selected item
+                                    { "id": "PQM", "value": "PQM" },
+                                    { "id": "PDM", "value": "PDM" },
+                                    { "id": "WMS", "value": "WMS" },
+                                    { "id": "SCC", "value": "SCC" },
+                                ]
+                            },
+                            { name: "feedContext", view: "scrollview", label: "反馈内容" ,height:150,scroll:"y",body:{template:data[0].feedContext}},
+                            { name: "tel", view: "text", label: "联系电话",value:data[0].tel },
+                            {name:"answer",label:"回复",view:"scrollview",height:150,scroll:"y",body:{template:data[0].answer}},
+                            {
+                                cols: [
+                                    // { view: "button", value: "提交", type: "form", click: newpost },
+                                    {
+                                        view: "button", value: "取消", click: function () {
+                                            location.href = '/';
+                                        }
+                                    }
+                                ]
+                            }
+                            
+                        ]
+                    }
+                }).show();
+            })
+</script>
+<%- include('footer') %>

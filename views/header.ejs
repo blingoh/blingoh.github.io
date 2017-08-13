@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="/javascripts/webix.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/webix.css">
+    <title>Fri_pro</title>
+
+    <script type="text/javascript" src="//cdn.webix.com/components/sidebar/sidebar.js"></script>
+	<link rel="stylesheet" type="text/css" href="//cdn.webix.com/components/sidebar/sidebar.css">
+</head>
+
+<body>
+    <script>
+        webix.ready(function(){
+            function logout(){
+                webix.ajax().post('/logout',function(text,data,xhr){
+                    if(text=='success'){
+                        webix.message({text:'退出登录'});
+                        location.href='/login';
+                    };
+                    if(text=='fail'){
+                        webix.message({type:"error",text:'退出登陆出现问题'});
+                        location.href='/';
+                    }
+                })
+            };
+
+            webix.ui({
+                view:"button",
+                value:"退出登陆",
+                type:"form",
+                height:40, 
+                width:100, 
+                align:"right",
+                click:logout
+            });
+        });
+    </script>

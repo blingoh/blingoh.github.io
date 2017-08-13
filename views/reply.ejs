@@ -1,0 +1,57 @@
+<%- include('header')%>
+    <style>
+        #areaA {
+            margin: 5px;
+        }
+    </style>
+    <div id="areaA"></div>
+
+
+    <script type="text/javascript" charset="utf-8">
+
+        var json = '<%- JSON.stringify(result)%>';
+        data = JSON.parse(json);
+
+        webix.ready(function(){
+            function n_reply(){
+                webix.message(JSON.stringify($$("grid").getValues(),null,2));
+                webix.ajax().post('/reply/'+ data[0]._id,$$("grid").getValues(),function(text,data,xhr){
+                    if(text == "回复成功"){
+                        webix.message(text);
+                        location.href='/viewall';
+                    }else{
+                        webix.message({type:"error",text:"回复失败"});
+                    }
+                })
+            };
+                
+
+            var form1 = [
+            { template: "已发布    "+data[0].title, type: "header", width: 400 },
+            {
+                cols: [
+                    { view: "label", label: data[0].userName, height: 20, align: "left" },
+                    { view: "label", label: '发布时间' },
+                    //time
+           //         { view: "label", label: '<%=result[0].userName%>', height: 20, align: "left" },
+                ]
+            },
+            { view: "label", label: data[0].productType, height: 20, align: "left" },
+            {view:"scrollview",height:180,scroll:"y",body:{template:data[0].feedContext}},
+            {view:"textarea",name:"answer",height:180,label:"管理员",labelPosition:"top"},
+            {view:"button",value:"发表回复",width:100,align:"left",click:n_reply}
+        ];
+
+        webix.ui({
+            container: "areaA",
+            margin: 10, rows: [
+                { view: "form",id :"grid", elements: form1,scroll: false }
+            ]
+        });
+
+        })
+
+        
+    </script>
+
+<%- include('footer')%>
