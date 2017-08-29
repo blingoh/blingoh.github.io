@@ -20,7 +20,7 @@
         webix.ajax().post('/posts', $$("win2").getValues(), function (text, data, xhr) {
           if (text == 'success') {
             webix.message(text);
-            location.href='/';
+            location.href = '/';
           }
           else {
             webix.message({ type: "error", text: '出错' });
@@ -31,28 +31,29 @@
 
       function init(text) {
         webix.ui({
-          view:"window",
-          id:"window",
-          width:550,
-          height:550,
-          top:100,
-          left:400,
-          move:true,
-          resize:true,
-          head:{
-            cols:[
-              {view:"label",label:"——— 在线反馈 ———",align:'center'},
-              {view:"button",label:"X",width:50,align:'right',click:"$$('window').close();"}
+          view: "window",
+          id: "window",
+          width: 550,
+          height: 550,
+          top: 100,
+          left: 400,
+          move: true,
+          resize: true,
+          head: {
+            cols: [
+              { view: "label", label: "——— 在线反馈 ———", align: 'center' },
+              { view: "button", label: "X", width: 50, align: 'right', click: "$$('window').close();" }
             ]
           },
-        body:{
-          rows:[
-          {view:"label",label:"标题     ："+text[0].title},
-          {view:"label",label:"产品类型:"+text[0].productType},
-          {view:"label",label:"反馈内容:"+text[0].feedContext},
-          {view:"label",label:"联系电话:"+text[0].tel},
-          {view:"label",label:"回复     :"+text[0].answer}
-        ]}
+          body: {
+            rows: [
+              { view: "label", label: "标题     ：" + text[0].title },
+              { view: "label", label: "产品类型:" + text[0].productType },
+              { view: "label", label: "反馈内容:" + text[0].feedContext },
+              { view: "label", label: "联系电话:" + text[0].tel },
+              { view: "label", label: "回复     :" + text[0].answer }
+            ]
+          }
         }).show();
 
       };
@@ -89,7 +90,23 @@
                 { "id": "SCC", "value": "SCC" },
               ]
             },
-            { name: "feedContext", view: "text", label: "反馈内容" },
+            { name: "feedContext", view: "textarea", height: 150, label: "反馈内容" },
+            {
+              view: "uploader", value: '上传图片',
+              name: "files",
+              link: "mylist", 
+            //  upload: "php/upload.php"
+            },
+            {
+					 	id:"mytemplate", autoheight:true,
+						template:function(data){
+							var names = [];
+							if (data.each)
+								data.each(function(obj){  names.push(obj.name);  });
+							return names.join(", ");
+						},
+						borderless:true 
+					},
             { name: "tel", view: "text", label: "联系电话" },
             {
               cols: [
